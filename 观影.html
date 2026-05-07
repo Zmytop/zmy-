@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>灰色主题炫酷观影网页</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+<link rel="stylesheet" href="字体.css">
+<link rel="stylesheet" href="导航栏.css">
+<link rel="stylesheet" href="左下角导航.css">
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #222; /* 灰色主题背景 */
+  overflow-x: hidden;
+  color: #fff;
+}
+
+/* 顶部导航 */
+.nav-box {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px 0;
+ background-image: url(电影院.png);
+}
+.nav-box img {
+  width: 120px;
+  height: 180px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+}
+.nav-box img:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px 10px #aaa; /* 灰色光晕 */
+}
+
+/* 轮播区块 */
+.section {
+  margin: 50px 0;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.6s ease;
+}
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.swiper {
+  width: 90%;
+  max-width: 800px;
+  height: 400px;
+  margin: 0 auto 20px auto;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 30px #aaa;
+}
+.swiper-slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.8) contrast(1.1);
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* 海报 */
+.posters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+.poster {
+  width: 120px;
+  height: 180px;
+  background-color: #555;
+  border-radius: 5px;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.poster:hover {
+  transform: translateY(-5px) scale(1.1) rotateY(5deg);
+  box-shadow: 0 0 25px 10px #aaa;
+}
+
+/* 海报解释文本 */
+.poster-desc {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 1rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+}
+.poster-desc.show {
+  opacity: 1;
+  transform: translateY(0);
+  animation: descAppear 0.5s ease forwards;
+}
+@keyframes descAppear {
+  0% { opacity:0; transform: translateY(30px);}
+  100% { opacity:1; transform: translateY(0);}
+}
+
+/* 评论区 */
+.comment-container {
+  width: 90%;
+  max-width: 800px;
+  margin: 10px auto 50px auto;
+}
+.comment-btn {
+  display: block;
+  margin: 10px 0;
+  padding: 8px 15px;
+  background-color: rgba(128,128,128,0.6);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.comment-btn:hover {
+  background-color: rgba(128,128,128,0.8);
+}
+.comment-box {
+  display: none;
+  margin-top: 10px;
+  animation: slideDown 0.3s ease forwards;
+}
+.comment-box textarea {
+  width: 100%;
+  height: 60px;
+  resize: none;
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
+  background-color: #000;
+  color: #fff;
+}
+.comment-box button {
+  margin-top: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: rgba(128,128,128,0.6);
+  color: #fff;
+  transition: all 0.3s ease;
+}
+.comment-box button:hover {
+  background-color: rgba(128,128,128,0.8);
+}
+.comment-list {
+  margin-top: 10px;
+}
+.comment-item {
+  background-color: #333;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+/* 流动线条 */
+.lines {
+  position: relative;
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+.lines span {
+  position: absolute;
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #aaa, transparent);
+  animation: moveLine 1.5s linear infinite;
+  opacity: 0.7;
+}
+.lines span:nth-child(1) { top:0; animation-delay:0s; }
+.lines span:nth-child(2) { top:0; animation-delay:0.5s; }
+.lines span:nth-child(3) { top:0; animation-delay:1s; }
+.lines span:nth-child(4) { top:0; animation-delay:1.5s; }
+
+@keyframes moveLine {
+  0% { left: -200px; }
+  100% { left: 100%; }
+}
+
+@keyframes slideDown {
+  0% { transform: translateY(-20px); opacity:0; }
+  100% { transform: translateY(0); opacity:1; }
+}
+.box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* 图片覆盖盒子，保持比例，可能裁剪 */
+}
+.scrollVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+   opacity: 0; 
+}
+
+.full-screen {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  z-index: 9999;
+}
+
+.corner {
+  position: fixed;
+  width:200px;
+  height:122px;
+  bottom: 10px;
+  right:10px;
+  z-index: 9999;
+  object-fit: cover;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+</head>
+<iframe 
+    src="text.6.chat.html" 
+    style="
+        position: fixed;       /* 固定在视口 */
+        bottom: 20px;          /* 距离底部 20px */
+        left: 20px;            /* 距离左侧 20px */
+        width: 190px;          /* iframe 尺寸包裹圆球 */
+        height: 170px; 
+        border: none;          /* 去掉边框 */
+        z-index: 9999;         /* 保证在网页最上层 */
+        pointer-events: auto;  /* 允许点击圆球 */
+    "
+></iframe>
+<nav class="navbar">
+  <ul class="nav-list">
+    <li class="nav-item"><span class="divider">—</span><a href="#a" class="nav-link active">漫威</a></li>
+    <li class="nav-item"><span class="divider">—</span><a href="#b" class="nav-link">DC</a></li>
+    <li class="nav-item"><span class="divider">—</span><a href="#c" class="nav-link">变形金刚</a></li>
+    <li class="nav-item"><span class="divider">—</span><a href="#d" class="nav-link">星际穿越</a></li>
+    <li class="nav-item"><span class="divider">—</span><a href="#e" class="nav-link">其他电影</a></li>
+  </ul>
+</nav>
+<div class="nav-box">
+  <img src="图片\gtx.webp" onclick="scrollToPlayer('a')" alt="漫威">
+  <img src="图片\bfx.webp" onclick="scrollToPlayer('b')" alt="DC">
+  <img src="图片\qtz.webp" onclick="scrollToPlayer('c')">
+  <img src="图片\xjcy.webp" onclick="scrollToPlayer('d')">
+</div>
+<section id="a"><section id="video-section">
+  <video id="myVideo" class="scrollVideo" src="1.漫威片头（带BGM）(Av215673946,P1).mp4" preload="auto" muted></video>
+</section>
+<div class="section">
+    <h2 class="ironman-h2-variant">漫威-钢铁侠</h2>
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide"><video src="视频\【钢铁侠_燃剪】I am Iron Man - 1.钢铁侠燃剪(Av50391195,P1).mp4" autoplay muted loop playsinline></video></div>
+      <div class="swiper-slide"><video src="视频\1.【4K HDR 120帧 】钢铁侠2 ：战斗集(Av114371539764874,P1).mp4" autoplay muted loop playsinline></video></div>
+      <div class="swiper-slide"><video src="视频\1.【4k120帧】钢铁侠3：决战(Av1555394888,P1).mp4" autoplay muted loop playsinline></video></div>
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+  <div class="posters">
+    <div class="poster"  data-desc="mark-1" style="background-image: url(gtx1.jpeg);
+    background-size: cover;"></div>
+    <div class="poster"  data-desc="mark-2" style="background-image: url(gtx2.webp);
+    background-size: cover;"></div>
+   <div class="poster"  data-desc="mark-3" style="background-image: url(gtx3.webp);
+    background-size: cover;"></div>
+  </div>
+  
+  <div class="poster-desc" id="poster-desc"></div>
+
+  <div class="comment-container">
+    <button class="comment-btn">评论</button>
+    <div class="comment-box">
+      <textarea placeholder="输入你的评论..."></textarea>
+      <button class="submit-comment">提交</button>
+    </div>
+    <div class="comment-list"></div>
+  </div>
+
+  <div class="lines">
+    <span></span><span></span><span></span><span></span>
+  </div>
+</div></section>
+<section id="b"><section class="video-section">
+  <video class="scrollVideo" src="1.DC动漫2018片头(Av25770506,P1).mp4" preload="auto" muted></video>
+</section>
+<div class="section">
+    <h2 class="batman-h2-darkknight" data-text="蝙蝠侠">DC-蝙蝠侠</h2>
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide"><video src="【蝙蝠侠_高燃_混剪_1080p】偏以凡人身躯，挑战神所不能 - 1.Within Temptation - Shot In The Dark.h(Av60048418,P1).mp4" autoplay muted loop playsinline></video></div>
+      <div class="swiper-slide"><video src="图片\【蝙蝠侠_混剪_高燃_1080】帅气踩点剪辑！蝙蝠侠诞辰80周年纪念！！ - 1.蝙蝠侠(Av62891838,P1).mp4" autoplay muted loop playsinline></video></div>
+      <div class="swiper-slide"><video src="1.“告诉我，神会流血吗？”(Av116497313764683,P1).mp4" autoplay muted loop playsinline></video></div>
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+  <div class="posters">
+    <div class="poster"  data-desc="蝙蝠侠（单杀大超）" style="background-image: url(bfx1.jpg);
+    background-size: cover;"></div>
+    <div class="poster"  data-desc="小丑（希斯莱杰）" style="background-image: url(小丑.webp);
+    background-size: cover;"></div>
+   <div class="poster"  data-desc="超人对战蝙蝠侠" style="background-image: url(超人蝙蝠侠.webp);
+    background-size: cover;"></div>
+  </div>
+  
+  <div class="poster-desc" id="poster-desc"></div>
+
+  <div class="comment-container">
+    <button class="comment-btn">评论</button>
+    <div class="comment-box">
+      <textarea placeholder="输入你的评论..."></textarea>
+      <button class="submit-comment">提交</button>
+    </div>
+    <div class="comment-list"></div>
+  </div>
+
+  <div class="lines">
+    <span></span><span></span><span></span><span></span>
+  </div>
+</div></section>
+<section id="c"><section class="video-section">
+  <video class="scrollVideo" src="【𝟒𝐊𝟏𝟐𝟎𝐅𝐏𝐒】擎天柱超帅名场面之一 2026-05-07 23-35-44.mp4" preload="auto" muted></video>
+</section>
+<div class="section">
+    <h2 class="prime-h2-blade">变形金刚-擎天柱</h2>
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide"><video src="视频\1.《变形金刚》2007真人电影预告片（1080P）(Av940513053,P1).mp4" autoplay muted loop playsinline></video></div>
+      <div class="swiper-slide"><video src="视频\1.Transformers 2 - Optimus Prime vs The (Av384039457,P1).mp4" autoplay muted loop playsinline></video></div>
+      <div class="swiper-slide"><video src="视频\1.bz606(Av970713905,P1).mp4" autoplay muted loop playsinline></video></div>
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+  <div class="posters">
+    <div class="poster"  data-desc="" style="background-image: url(qtz1.webp);
+    background-size: cover;"></div>
+    <div class="poster"  data-desc="" style="background-image: url(bth.png);
+    background-size: cover;"></div>
+   <div class="poster"  data-desc="" style="background-image: url(力霸天.webp);
+    background-size: cover;"></div>
+  </div>
+  
+  <div class="poster-desc" id="poster-desc"></div>
+
+  <div class="comment-container">
+    <button class="comment-btn">评论</button>
+    <div class="comment-box">
+      <textarea placeholder="输入你的评论..."></textarea>
+      <button class="submit-comment">提交</button>
+    </div>
+    <div class="comment-list"></div>
+  </div>
+
+  <div class="lines">
+    <span></span><span></span><span></span><span></span>
+  </div>
+</div></section>
+<section id="d"><section class="video-section">
+  <video class="scrollVideo" src="【𝐁𝐃 𝟒𝐊 𝐇𝐃𝐑_混剪】《星际穿越》中那些极致震撼的画面-【Hi-Res无损】 2026-05-07 23-29-10.mp4" preload="auto" muted></video>
+</section>
+<div class="section">
+    <h2 class="batman-h2-darkknight" data-text="蝙蝠侠">星际穿越</h2>
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide"><video src="【𝐁𝐃 𝟒𝐊 𝐇𝐃𝐑_混剪】《星际穿越》中那些极致震撼的画面-【Hi-Res无损】 - 1.【𝐁𝐃 𝟒𝐊 𝐇𝐃𝐑_混剪】《星际穿越》中那些极致震撼的画面-(Av914620640,P1).mp4" autoplay muted loop playsinline></video></div>
+      <div class="swiper-slide"><video src="【𝐁𝐃 𝟒𝐊 𝐇𝐃𝐑_混剪】《星际穿越》中那些极致震撼的画面-【Hi-Res无损】 - 1.【𝐁𝐃 𝟒𝐊 𝐇𝐃𝐑_混剪】《星际穿越》中那些极致震撼的画面-(Av914620640,P1).mp4" autoplay muted loop playsinline></video></div>
+      <div class="swiper-slide"><video src="【𝐁𝐃 𝟒𝐊 𝐇𝐃𝐑_混剪】《星际穿越》中那些极致震撼的画面-【Hi-Res无损】 - 1.【𝐁𝐃 𝟒𝐊 𝐇𝐃𝐑_混剪】《星际穿越》中那些极致震撼的画面-(Av914620640,P1).mp4" autoplay muted loop playsinline></video></div>
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+  <div class="posters">
+    <div class="poster"  data-desc="蝙蝠侠（单杀大超）" style="background-image: url(黑洞.webp);
+    background-size: cover;"></div>
+    <div class="poster"  data-desc="小丑（希斯莱杰）" style="background-image: url(飞船.webp);
+    background-size: cover;"></div>
+   <div class="poster"  data-desc="超人对战蝙蝠侠" style="background-image: url(飞船2.webp);
+    background-size: cover;"></div>
+  </div>
+  
+  <div class="poster-desc" id="poster-desc"></div>
+
+  <div class="comment-container">
+    <button class="comment-btn">评论</button>
+    <div class="comment-box">
+      <textarea placeholder="输入你的评论..."></textarea>
+      <button class="submit-comment">提交</button>
+    </div>
+    <div class="comment-list"></div>
+  </div>
+
+  <div class="lines">
+    <span></span><span></span><span></span><span></span>
+  </div>
+</div></section>
+<section id="e"><div class="other-movies">
+  <h2>其他电影推荐</h2>
+  <div class="posters">
+    <div class="poster" data-desc="电影A" style="background-image: url(heianqs.webp); background-size: cover;"></div>
+    <div class="poster" data-desc="电影B" style="background-image: url(太阳.webp); background-size: cover;"></div>
+    <div class="poster" data-desc="电影C" style="background-image: url(jf.webp); background-size: cover;"></div>
+    <div class="poster" data-desc="电影D" style="background-image: url(jgdy.webp); background-size: cover;"></div>
+  </div>
+  <div class="poster-desc"></div>
+</div></section>
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script>
+const swipers = document.querySelectorAll('.mySwiper');
+swipers.forEach(swiperEl => {
+  const swiper = new Swiper(swiperEl,{
+    slidesPerView:1, 
+    loop:true,
+    autoplay:{
+      delay:3000,
+      disableOnInteraction:false,  // 用户交互后不永久禁用自动播放
+    },
+    pagination:{
+      el:swiperEl.querySelector('.swiper-pagination'), 
+      clickable:true
+    },
+  });
+
+  // === 新增：鼠标悬停停止轮播，移出恢复 ===
+  const swiperContainer = swiperEl;
+  
+  // 鼠标进入时暂停自动播放
+  swiperContainer.addEventListener('mouseenter', () => {
+    swiper.autoplay.stop();
+  });
+  
+  // 鼠标离开时恢复自动播放
+  swiperContainer.addEventListener('mouseleave', () => {
+    swiper.autoplay.start();
+  });
+});
+
+const sections=document.querySelectorAll('.section');
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting) entry.target.classList.add('visible');
+  });
+},{threshold:0.2});
+sections.forEach(section=>observer.observe(section));
+
+function scrollToPlayer(id){
+  const el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// 海报解释
+const posters=document.querySelectorAll('.poster');
+const descEl=document.getElementById('poster-desc');
+posters.forEach(poster=>{
+  poster.addEventListener('click',()=>{
+    const text=poster.getAttribute('data-desc')||'';
+    descEl.textContent=text;
+    descEl.classList.remove('show');
+    void descEl.offsetWidth;
+    descEl.classList.add('show');
+  });
+});
+
+// 评论功能
+document.querySelectorAll('.comment-container').forEach(container=>{
+  const btn=container.querySelector('.comment-btn');
+  const box=container.querySelector('.comment-box');
+  const submitBtn=container.querySelector('.submit-comment');
+  const list=container.querySelector('.comment-list');
+
+  btn.addEventListener('click',()=>{box.style.display=box.style.display==='block'?'none':'block';});
+  submitBtn.addEventListener('click',()=>{
+    const textArea=box.querySelector('textarea');
+    const value=textArea.value.trim();
+    if(value){
+      const item=document.createElement('div');
+      item.classList.add('comment-item');
+      item.textContent=value;
+      list.appendChild(item);
+      textArea.value='';
+    }
+  });
+});
+const videos = document.querySelectorAll('.scrollVideo');
+let anyFullScreen = false; // 页面中是否有视频全屏播放
+
+videos.forEach((video, index) => {
+  const videoSection = video.parentElement;
+  let videoPlayed = false;
+  let isFullScreen = false;
+
+  window.addEventListener('scroll', () => {
+    if (!videoPlayed && !anyFullScreen) {
+      const rect = videoSection.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      if (rect.top <= windowHeight/2 && rect.bottom >= windowHeight/2) {
+        playFullScreenVideo(video);
+        videoPlayed = true;
+      }
+    }
+  });
+
+  function playFullScreenVideo(video) {
+    anyFullScreen = true;          // 页面锁定，禁止其他视频触发
+    isFullScreen = true;
+        video.style.opacity = 1;    
+    video.classList.add('full-screen');
+    document.body.style.overflow = 'hidden'; // 禁止滚动
+    video.currentTime = 0;
+    video.play();
+
+    // 视频播放完毕
+    video.onended = () => exitFullScreen(video);
+
+    // 点击视频或任意地方跳过
+    const skipHandler = () => {
+      if (isFullScreen) exitFullScreen(video);
+    };
+    document.addEventListener('click', skipHandler);
+    video._skipHandler = skipHandler;
+  }
+
+  function exitFullScreen(video) {
+    isFullScreen = false;
+    anyFullScreen = false;
+    video.pause();
+    video.classList.remove('full-screen');
+    video.classList.add('corner');
+    document.body.style.overflow = ''; // 恢复滚动
+    if (video._skipHandler) document.removeEventListener('click', video._skipHandler);
+  }
+
+  // 点击角落视频再次全屏播放
+  video.addEventListener('click', (e) => {
+    if (video.classList.contains('corner') && !anyFullScreen) {
+      playFullScreenVideo(video);
+    }
+  });
+});
+
+</script>
+<script src="字体.js"></script>
+<script src="导航栏.js"></script>
+<script src="左下角导航.js"></script>
+</body>
+</html>
