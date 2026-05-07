@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>登录页面 · 3:1 分栏</title>
+  <style>
+    /* 全局重置 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #0f1117;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      color: #e0e6ed;
+    }
+
+    /* 主容器：左右分栏，3:1 比例 */
+    .split-container {
+      display: flex;
+      width: 100%;
+      max-width: 1200px;
+      height: 85vh;
+      min-height: 600px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+      animation: fadeIn 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.97);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* ===== 左侧大图片区域：占3份 (flex: 3) ===== */
+    .image-panel {
+      flex: 3;
+      position: relative;
+      background: linear-gradient(135deg, #1a1e2b 0%, #2d3a4f 100%);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      cursor: pointer;
+    }
+
+    /* 大图片样式 */
+    .image-panel .feature-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.9) contrast(1.05);
+    }
+
+    /* 图片上的叠加文字层 - 竖式排列，默认透明 */
+    .image-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #ffffff;
+      z-index: 2;
+      pointer-events: none;
+      /* 默认完全透明 */
+      opacity: 0;
+      transition: opacity 0.5s ease, text-shadow 0.5s ease;
+    }
+
+    /* 竖式排列文字 */
+    .vertical-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: 0.3rem;
+      line-height: 1.3;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      color: #ffffff;
+    }
+
+    /* 鼠标悬停在左侧图片区域时显示文字 */
+    .image-panel:hover .image-overlay {
+      opacity: 1;
+      text-shadow: 0 4px 30px rgba(245, 176, 66, 0.7), 0 0 60px rgba(245, 176, 66, 0.4);
+    }
+
+    /* 半透明遮罩，让文字更清晰 */
+    .image-panel::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.1) 60%, transparent 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ===== 右侧登录面板：占1份 (flex: 1) ===== */
+    .login-panel {
+      flex: 1;
+      background: rgba(20, 22, 30, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 2rem;
+      min-width: 320px;
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* 登录表单容器 */
+    .login-form-wrapper {
+      width: 100%;
+      max-width: 340px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* 登录标题 */
+    .login-header {
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-header h1 {
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: 0.4px;
+    }
+
+    .login-header p {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 0.3rem;
+    }
+
+    /* 输入框组 */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .input-group label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #b0bec5;
+      letter-spacing: 0.3px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper .icon {
+      position: absolute;
+      left: 0.9rem;
+      font-size: 1rem;
+      color: #6b7280;
+      pointer-events: none;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      padding: 0.8rem 0.9rem 0.8rem 2.6rem;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      font-size: 0.9rem;
+      color: #f1f5f9;
+      outline: none;
+      transition: all 0.25s ease;
+      font-family: inherit;
+    }
+
+    .input-wrapper input::placeholder {
+      color: #5f6b7a;
+      font-size: 0.85rem;
+    }
+
+    .input-wrapper input:focus {
+      border-color: rgba(245, 176, 66, 0.7);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 0 3px rgba(245, 176, 66, 0.1);
+    }
+
+    .input-wrapper:focus-within .icon {
+      color: #f5b042;
+    }
+
+    /* 选项行 */
+    .options-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-top: -0.2rem;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #b0bec5;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .remember-me input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 0.9rem;
+      height: 0.9rem;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .remember-me input[type="checkbox"]:checked {
+      background: #f5b042;
+      border-color: #f5b042;
+    }
+
+    .remember-me input[type="checkbox"]:checked::after {
+      content: "✓";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #0f1117;
+      font-size: 0.65rem;
+      font-weight: bold;
+    }
+
+    .forgot-password {
+      color: #94a3b8;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .forgot-password:hover {
+      color: #f5b042;
+    }
+
+    /* 登录按钮 */
+    .login-button {
+      width: 100%;
+      padding: 0.85rem;
+      background: #f5b042;
+      color: #0f1117;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.25s;
+      margin-top: 0.3rem;
+      font-family: inherit;
+      box-shadow: 0 5px 15px rgba(245, 176, 66, 0.25);
+    }
+
+    .login-button:hover {
+      background: #f7c060;
+      box-shadow: 0 7px 18px rgba(245, 176, 66, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .login-button:active {
+      transform: translateY(0);
+      background: #f0a830;
+    }
+
+    /* 注册提示 */
+    .register-prompt {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 0.3rem;
+    }
+
+    .register-link {
+      color: #f5b042;
+      text-decoration: none;
+      font-weight: 550;
+      margin-left: 0.2rem;
+    }
+
+    .register-link:hover {
+      color: #f7c060;
+      text-decoration: underline;
+    }
+
+    /* 响应式：小屏幕改为上下布局 */
+    @media (max-width: 768px) {
+      .split-container {
+        flex-direction: column;
+        height: auto;
+        min-height: auto;
+        max-width: 500px;
+      }
+
+      .image-panel {
+        flex: none;
+        height: 220px;
+        min-height: 180px;
+      }
+
+      .login-panel {
+        flex: none;
+        padding: 2rem 1.5rem;
+        min-width: auto;
+      }
+
+      .vertical-text {
+        font-size: 2rem;
+        letter-spacing: 0.2rem;
+      }
+    }
+    @keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient-text {
+  background: linear-gradient(
+    270deg,
+    #f5b042,
+    #ff6b6b,
+    #a855f7,
+    #3b82f6,
+    #10b981,
+    #f5b042
+  );
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientShift 4s ease infinite;
+}
+  </style>
+</head>
+<body>
+  <div class="split-container">
+    <!-- 左侧大图片区域 (3份) -->
+    <div class="image-panel">
+      <!-- 使用SVG生成高质量抽象图片，模拟大图效果 -->
+      <svg class="feature-image" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2d3a4f;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#1e2a3a;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#3a4c5e;stop-opacity:1" />
+          </linearGradient>
+          <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#f5b042;stop-opacity:0.9" />
+            <stop offset="100%" style="stop-color:#f7c060;stop-opacity:0.7" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <!-- 背景 -->
+        <rect width="800" height="600" fill="url(#grad1)" />
+        <!-- 抽象图形元素 -->
+        <circle cx="150" cy="120" r="180" fill="rgba(245,176,66,0.08)" />
+        <circle cx="650" cy="480" r="240" fill="rgba(245,176,66,0.06)" />
+        <circle cx="400" cy="300" r="280" fill="rgba(255,255,255,0.03)" />
+        <!-- 装饰线条 -->
+        <path d="M-50 450 Q200 200 450 350 T850 150" stroke="rgba(245,176,66,0.35)" stroke-width="3" fill="none" filter="url(#glow)"/>
+        <path d="M-50 500 Q250 280 500 400 T850 250" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" fill="none" />
+        <circle cx="580" cy="180" r="40" fill="rgba(245,176,66,0.15)" filter="url(#glow)" />
+        <circle cx="200" cy="420" r="25" fill="rgba(255,255,255,0.08)" />
+        <!-- 几何装饰 -->
+        <rect x="620" y="380" width="80" height="80" rx="16" fill="none" stroke="rgba(245,176,66,0.25)" stroke-width="2" transform="rotate(25 660 420)" />
+        <rect x="100" y="80" width="60" height="60" rx="12" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" transform="rotate(15 130 110)" />
+      </svg>
+
+      <!-- 图片叠加文字 - 竖式排列，默认透明，悬停显示 -->
+      <div class="image-overlay">
+        <div class="vertical-text"><div class="animated-gradient-text">豪到你了？</div></div>
+      </div>
+    </div>
+
+    <!-- 右侧登录面板 (1份) -->
+    <div class="login-panel">
+      <div class="login-form-wrapper">
+        <div class="login-header">
+          <h1>登录</h1>
+          <p>欢迎回来，请登录您的账户</p>
+        </div>
+
+        <form id="loginForm" onsubmit="return handleLogin(event)">
+          <!-- 账号输入框 -->
+          <div class="input-group">
+            <label for="username">账号</label>
+            <div class="input-wrapper">
+              <span class="icon">👤</span>
+              <input 
+                type="text" 
+                id="username" 
+                name="username" 
+                placeholder="请输入账号" 
+                required 
+                autocomplete="username"
+              >
+            </div>
+          </div>
+
+          <!-- 密码输入框 -->
+          <div class="input-group">
+            <label for="password">密码</label>
+            <div class="input-wrapper">
+              <span class="icon">🔒</span>
+              <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                placeholder="请输入密码" 
+                required 
+                autocomplete="current-password"
+              >
+            </div>
+          </div>
+
+          <!-- 记住我与忘记密码 -->
+          <div class="options-row">
+            <label class="remember-me">
+              <input type="checkbox" id="remember" name="remember">
+              <span>记住我</span>
+            </label>
+            <a href="#" class="forgot-password">忘记密码？</a>
+          </div>
+
+          <!-- 登录按钮 -->
+          <button type="submit" class="login-button">登 录</button>
+        </form>
+
+        <!-- 注册提示 -->
+        <div class="register-prompt">
+          还没有账户？
+          <a href="#" class="register-link">立即注册</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function handleLogin(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const remember = document.getElementById('remember').checked;
+      
+      if (!username || !password) {
+        alert('请填写账号和密码');
+        return false;
+      }
+      window.location.href = '导航界面.html'; 
+      console.log('登录信息：', { username, password, remember });
+      alert(`登录演示成功！\n账号：${username}\n${remember ? '已记住登录状态' : ''}`);
+      
+      return false;
+    }
+
+    // 为链接添加演示提示
+    document.querySelector('.forgot-password').addEventListener('click', function(e) {
+      e.preventDefault();
+      alert('忘记密码功能（演示模式）');
+    });
+
+    document.querySelector('.register-link').addEventListener('click', function(e) {
+      e.preventDefault();
+      alert('注册页面（演示模式）');
+    });
+  </script>
+</body>
+</html>
