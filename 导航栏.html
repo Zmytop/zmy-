@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>固定右侧竖式导航 + 滚动高亮 + 悬停加深</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    background-color: #1a1e2b;
+  }
+
+  /* ===== 固定导航栏 ===== */
+  .navbar {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    background-color: rgba(0,0,0,0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 1.2rem;
+    border-radius: 28px;
+    box-shadow: -4px 4px 20px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.12);
+    width: fit-content;
+    z-index: 1000;
+    animation: slideInFromRight 0.65s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+  }
+
+  @keyframes slideInFromRight {
+    0% { transform: translateX(120%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+
+  .nav-list { list-style:none; display:flex; flex-direction:column; align-items:stretch; width:100%; }
+  .nav-item { display:flex; flex-direction:column; align-items:stretch; width:100%; }
+  .divider { color: rgba(255,255,255,0.45); text-align:center; letter-spacing:2px; margin:0.5rem 0; }
+  .nav-item:first-child .divider { display:none; }
+
+  .nav-link {
+    color: #9ca3af;
+    text-decoration:none;
+    font-size:1rem;
+    font-weight:480;
+    padding:0.7rem 0.4rem;
+    text-align:center;
+    display:block;
+    width:100%;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+  }
+
+  /* 普通按钮悬停 */
+  .nav-link:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255,255,255,0.6);
+  }
+
+  /* 高亮active */
+  .nav-link.active {
+    color: #f5b042;
+    font-weight:500;
+    text-shadow: 0 0 15px rgba(245,176,66,0.9);
+  }
+
+  /* active按钮悬停时颜色加深 / 发光增强 */
+  .nav-link.active:hover {
+    color:#ffc966;
+    text-shadow:0 0 20px rgba(245,176,66,1);
+  }
+
+  /* 页面内容 */
+  main { display:flex; flex-direction:column; width:100%; }
+  section {
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:2rem;
+    color:#fff;
+  }
+
+  #home { background-color:#2d3142; }
+  #explore { background-color:#3f4752; }
+  #works { background-color:#4b5563; }
+  #about { background-color:#5a6472; }
+  #contact { background-color:#6b7584; }
+
+</style>
+</head>
+<body>
+
+<!-- 固定导航栏 -->
+<nav class="navbar">
+  <ul class="nav-list">
+    <li class="nav-item"><span class="divider">—</span><a href="#home" class="nav-link active">首页</a></li>
+    <li class="nav-item"><span class="divider">—</span><a href="#explore" class="nav-link">探索</a></li>
+    <li class="nav-item"><span class="divider">—</span><a href="#works" class="nav-link">作品</a></li>
+    <li class="nav-item"><span class="divider">—</span><a href="#about" class="nav-link">关于</a></li>
+    <li class="nav-item"><span class="divider">—</span><a href="#contact" class="nav-link">联系</a></li>
+  </ul>
+</nav>
+
+<!-- 页面内容 -->
+<main>
+  <section id="home"><h1>首页</h1><p>这里是首页内容</p></section>
+  <section id="explore"><h1>探索</h1><p>这里是探索内容</p></section>
+  <section id="works"><h1>作品</h1><p>这里是作品内容</p></section>
+  <section id="about"><h1>关于</h1><p>这里是关于内容</p></section>
+  <section id="contact"><h1>联系</h1><p>这里是联系内容</p></section>
+</main>
+
+<script>
+(function(){
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('section');
+
+  // 点击切换active
+  navLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      navLinks.forEach(l => l.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // 滚动检测，高亮导航按钮
+  window.addEventListener('scroll', function() {
+    const scrollPos = window.scrollY + window.innerHeight/2;
+    sections.forEach((section, index) => {
+      const top = section.offsetTop;
+      const bottom = top + section.offsetHeight;
+      if(scrollPos >= top && scrollPos < bottom){
+        navLinks.forEach(l => l.classList.remove('active'));
+        navLinks[index].classList.add('active');
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

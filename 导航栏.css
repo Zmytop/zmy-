@@ -1,0 +1,78 @@
+ .navbar {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    background-color: rgba(0,0,0,0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    padding: 1.5rem 1.2rem;
+    border-radius: 28px;
+    box-shadow: -4px 4px 20px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.12);
+    width: 80px;
+    z-index: 1000;
+    animation: slideInFromRight 0.65s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+  }
+
+  @keyframes slideInFromRight {
+    0% { transform: translateX(120%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+
+  .nav-list { list-style:none; display:flex; flex-direction:column; align-items:center; width:100%; }
+  .nav-item { display:flex; flex-direction:column; align-items:center; width:80x; }
+  .divider { color: rgba(255,255,255,0.45); text-align:center; letter-spacing:2px; margin:0.5rem 0; }
+  .nav-item:first-child .divider { display:none; }
+
+  .nav-link {
+    color: #9ca3af;
+    text-decoration:none;
+    font-size:1rem;
+    font-weight:480;
+    padding:0.7rem 0.4rem;
+    text-align:left;
+    display:block;
+    width:100%;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+  }
+
+  /* 普通按钮悬停 */
+  .nav-link:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255,255,255,0.6);
+  }
+
+  /* 高亮active */
+  .nav-link.active {
+    color: #f5b042;
+    font-weight:500;
+    text-shadow: 0 0 15px rgba(245,176,66,0.9);
+  }
+
+  /* active按钮悬停时颜色加深 / 发光增强 */
+  .nav-link.active:hover {
+    color:#ffc966;
+    text-shadow:0 0 20px rgba(245,176,66,1);
+  }
+
+  /* 页面内容 */
+  main { display:flex; flex-direction:column; width:100%; }
+  section {
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:2rem;
+    color:#fff;
+  }
+
+  #a { background-color:#2d3142; }
+  #b{ background-color:#3f4752; }
+  #c{ background-color:#4b5563; }
+  #d { background-color:#5a6472; }
+  #e{ background-color:#6b7584; }

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>不想做了，累了</title>
+    <style>
+        /* 重置样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #f7f9fc;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        header {
+            background-color: #E53935; /* 修改为红色 */
+            color: white;
+            padding: 20px 0;
+        }
+
+        header nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 20px;
+        }
+
+        header nav .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        header nav ul {
+            list-style: none;
+            display: flex;
+        }
+
+        header nav ul li {
+            margin-left: 20px;
+        }
+
+        header nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .hero {
+            background: url('https://via.placeholder.com/1200x400') no-repeat center center/cover;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5em;
+            background-color: rgba(0,0,0,0.5);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        section {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #E53935; /* 修改为红色 */
+        }
+
+        .about, .activities, .donate, .contact {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .activities .activity-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .activities .activity-item {
+            flex: 1 1 250px;
+            background-color: #ffebee; /* 改为浅红色背景 */
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .donate button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 15px 30px;
+            background-color: #E53935; /* 修改为红色 */
+            color: white;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .donate button:hover {
+            background-color: #d32f2f; /* 深红色悬停 */
+        }
+
+        .contact form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .contact input, .contact textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .contact button {
+            padding: 12px;
+            border: none;
+            background-color: #E53935; /* 修改为红色 */
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .contact button:hover {
+            background-color: #d32f2f; /* 深红色悬停 */
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 50px;
+        }
+
+        @media(max-width: 768px){
+            header nav ul {
+                flex-direction: column;
+                margin-top: 10px;
+            }
+
+            .activities .activity-list {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<iframe 
+    src="text.6.chat.html" 
+    style="
+        position: fixed;       /* 固定在视口 */
+        bottom: 20px;          /* 距离底部 20px */
+        left: 20px;            /* 距离左侧 20px */
+        width: 190px;          /* iframe 尺寸包裹圆球 */
+        height: 170px; 
+        border: none;          /* 去掉边框 */
+        z-index: 9999;         /* 保证在网页最上层 */
+        pointer-events: auto;  /* 允许点击圆球 */
+    "
+></iframe>
+    <header>
+        <nav>
+            <div class="logo">公益组织</div>
+            <ul>
+                <li><a href="#about">关于我们</a></li>
+                <li><a href="#activities">活动</a></li>
+                <li><a href="#donate">捐助</a></li>
+                <li><a href="#contact">联系我们</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <h1>携手公益，让世界更美好</h1>
+    </div>
+
+    <section id="about" class="about">
+        <h2>关于我们</h2>
+        <p>我们是一个致力于改善社区生活、保护环境和支持教育的公益组织。通过志愿服务和各类活动，我们希望让世界变得更美好。</p>
+    </section>
+
+    <section id="activities" class="activities">
+        <h2>活动与项目</h2>
+        <div class="activity-list">
+            <div class="activity-item">
+                <h3>环保清理</h3>
+                <p>定期组织社区环保活动，包括河流清理、植树和垃圾分类宣传。</p>
+            </div>
+            <div class="activity-item">
+                <h3>教育支持</h3>
+                <p>为贫困地区的学生提供学习用品、奖学金和线上辅导资源。</p>
+            </div>
+            <div class="activity-item">
+                <h3>社区服务</h3>
+                <p>关注老年人和弱势群体，提供生活帮助和陪伴活动。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="donate" class="donate">
+        <h2>捐助我们</h2>
+        <p>你的支持可以帮助我们开展更多公益项目，让更多人受益。每一份捐助，都是改变的力量。</p>
+        <button>立即捐助</button>
+    </section>
+
+    <section id="contact" class="contact">
+        <h2>联系我们</h2>
+        <form>
+            <input type="text" placeholder="姓名" required>
+            <input type="email" placeholder="邮箱" required>
+            <textarea rows="5" placeholder="留言内容" required></textarea>
+            <button type="submit">发送</button>
+        </form>
+    </section>
+
+    <footer>
+        &copy; 2026 公益组织. 保留所有权利.
+    </footer>
+
+</body>
+</html>

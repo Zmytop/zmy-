@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>豪到你了？</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Noto Serif SC', 'KaiTi', '楷体', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #0a0a0a;
+            background-image: radial-gradient(circle at 30% 40%, #1a1a1a 0%, #000000 90%);
+            padding: 20px;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        /* ========== 左侧：文字碰撞盒子 ========== */
+        .collision-wrapper {
+            animation: slideInLeft 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+            transform: translateX(-100px);
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .collision-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(14px);
+            border-radius: 40px;
+            padding: 20px 20px 25px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.9), 0 0 30px rgba(180, 130, 60, 0.25);
+            border: 1px solid #3a3a3a;
+        }
+
+        .collision-container canvas {
+            display: block;
+            background: #0d0d0d;
+            background-image: linear-gradient(180deg, #111 0%, #050505 100%);
+            border-radius: 30px;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.9), 0 15px 30px rgba(0,0,0,0.8);
+            border: 2px solid #2a2a2a;
+            touch-action: none;
+            cursor: pointer;
+        }
+
+        .collision-info {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+            color: #cccccc;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-shadow: 1px 1px 2px black;
+            background: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 10px 18px;
+            border: 1px solid #444;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .collision-info .badge {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 4px 12px;
+            border: 1px solid #444;
+            font-size: 0.85rem;
+        }
+
+        .badge.collision-count {
+            color: #d4af6a;
+        }
+
+        .badge.moving-count {
+            color: #8ab4d8;
+        }
+
+        .badge.state-text {
+            color: #c9a87c;
+        }
+
+        .reset-btn {
+            background: linear-gradient(180deg, #3a3a3a 0%, #1f1f1f 100%);
+            border: 1px solid #5a5a5a;
+            color: #e6d5b0;
+            font-weight: bold;
+            font-size: 0.85rem;
+            padding: 8px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #1a1a1a, 0 4px 10px rgba(0,0,0,0.7);
+            transition: all 0.08s ease;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .reset-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #0a0a0a, 0 3px 8px black;
+        }
+
+        .collision-hint {
+            color: #7a7a7a;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        /* ========== 右侧：按钮容器 ========== */
+        .button-wrapper {
+            animation: slideInRight 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
+            opacity: 0;
+            transform: translateX(100px);
+        }
+
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            width: 260px;
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(14px);
+            border-radius: 40px;
+            padding: 35px 25px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.9), 0 0 30px rgba(180, 130, 60, 0.15);
+            border: 1px solid #3a3a3a;
+            align-items: center;
+        }
+
+        .button-container .section-title {
+            color: #888;
+            font-size: 0.85rem;
+            letter-spacing: 0.3em;
+            margin-bottom: -15px;
+            text-transform: uppercase;
+        }
+
+        .button-container a {
+            position: relative;
+            padding: 18px 50px;
+            background-color: rgba(45,45,45,1);
+            border-radius: 50px;
+            color: #999;
+            font-size: 1.3em;
+            text-decoration: none;
+            overflow: hidden;
+            transition: .5s;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+        }
+
+.button-container a:hover {
+    color: var(--clr);
+    text-shadow: 0 0 15px var(--clr),
+                 0 0 25px var(--clr);
+}
+
+        .button-container a span {
+            position: relative;
+            z-index: 1;
+            letter-spacing: .2em;
+            font-weight: bold;
+        }
+
+        .button-container a::before {
+            content: '';
+            position: absolute;
+            top: var(--y);
+            left: var(--x);
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(var(--clr), transparent, transparent);
+            opacity: 0;
+            transition: .5s, top 0s, left 0s;
+        }
+
+        .button-container a::before {
+    content: '';
+    position: absolute;
+    top: var(--y);
+    left: var(--x);
+    transform: translate(-50%, -50%);
+    width: 200px;   /* 光晕宽度 */
+    height: 250px;  /* 光晕高度 */
+    background: radial-gradient(circle, var(--clr) 0%, transparent 70%);
+    opacity: 0.4;
+    transition: 0.05s, top 0s, left 0s;
+}
+        .button-container a::after {
+            content: '';
+            position: absolute;
+            background-color: rgba(45,45,45,.9);
+            inset: 2px;
+            border-radius: 48px;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .button-container {
+                flex-direction: row;
+                flex-wrap: wrap;
+                width: auto;
+                gap: 20px;
+                padding: 25px;
+                justify-content: center;
+            }
+            
+            .button-container a {
+                width: auto;
+                padding: 15px 35px;
+                font-size: 1.1em;
+            }
+            
+            .button-container .section-title {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== 左侧：文字碰撞盒子 ==================== -->
+    <div class="collision-wrapper">
+        <div class="collision-container">
+            <canvas id="gameCanvas" width="500" height="420" aria-label="文字碰撞游戏"></canvas>
+            
+            <div class="collision-info">
+                <span class="badge moving-count" id="movingDisplay">📦 </span>
+                <button class="reset-btn" id="resetButton">
+                    <span>🔄</span> 重排
+                </button>
+            </div>
+            <div class="collision-hint">
+                ✦✦✦✦
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 右侧：霓虹按钮 ==================== -->
+    <div class="button-wrapper">
+        <div class="button-container">
+            <span class="section-title">✦ 想去哪？✦</span>
+            <a href="观影.html" style="--clr:#0f0;"><span>电影页面</span></a>
+            <a href="地方美食.html" style="--clr:#ff0;"><span>地方美食</span></a>
+            <a href="公益.html" style="--clr:#f0f;"><span>公益网站</span></a>
+        </div>
+    </div>
+
+    <!-- ==================== 脚本 ==================== -->
+    <script>
+        // ========== 文字碰撞游戏逻辑 ==========
+        (function() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const W = 500, H = 420;
+            canvas.width = W;
+            canvas.height = H;
+
+            const GRAVITY = 0.35;
+            const GROUND_Y = H - 25;
+            const AIR_FRICTION = 0.9;
+            const GROUND_FRICTION = 0.8;
+            const STATIC_THRESHOLD = 0.3;
+            const SEPARATION_FORCE = 0.05;
+            const MIN_GAP = 2;
+            const BOUNCE_SPEED = 0.2;
+
+            const LINE_1 = "豪到你了？";
+            const LINE_2 = "张明佑作";
+            
+            let textBlocks = [];
+            let released = false;
+            let draggedBlock = null;
+            let dragOffsetX = 0, dragOffsetY = 0;
+            let isDragging = false;
+            let mouseX = 0, mouseY = 0;
+            let collisionCount = 0;
+            let collisionCooldown = new Map();
+
+            function getArrangedPositions() {
+                const positions = [];
+                const line1Chars = LINE_1.split('');
+                const line2Chars = LINE_2.split('');
+                
+                ctx.font = 'bold 26px "Noto Serif SC", "KaiTi", "楷体"';
+                const charWidth = 44;
+                const charHeight = 44;
+                const gap = 6;
+                
+                const line1Width = line1Chars.length * charWidth + (line1Chars.length - 1) * gap;
+                const line2Width = line2Chars.length * charWidth + (line2Chars.length - 1) * gap;
+                const totalHeight = charHeight * 2 + 12;
+                const startY = H/2 - totalHeight/2;
+                
+                let startX1 = W/2 - line1Width/2;
+                for (let i = 0; i < line1Chars.length; i++) {
+                    positions.push({
+                        x: startX1 + i * (charWidth + gap),
+                        y: startY,
+                        text: line1Chars[i],
+                        group: 1,
+                        color: '#e67e7e',
+                        bgColor: '#1e1c1a',
+                        borderColor: '#b34a4a'
+                    });
+                }
+                
+                let startX2 = W/2 - line2Width/2;
+                for (let i = 0; i < line2Chars.length; i++) {
+                    positions.push({
+                        x: startX2 + i * (charWidth + gap),
+                        y: startY + charHeight + 12,
+                        text: line2Chars[i],
+                        group: 2,
+                        color: '#7ea68e',
+                        bgColor: '#1a1c1b',
+                        borderColor: '#3d6b4f'
+                    });
+                }
+                
+                return positions;
+            }
+
+            function resetBlocks() {
+                collisionCount = 0;
+                collisionCooldown.clear();
+                released = false;
+                
+                const positions = getArrangedPositions();
+                textBlocks = [];
+                
+                positions.forEach((pos, index) => {
+                    textBlocks.push({
+                        id: index,
+                        text: pos.text,
+                        group: pos.group,
+                        x: pos.x,
+                        y: pos.y,
+                        vx: 0,
+                        vy: 0,
+                        width: 44,
+                        height: 44,
+                        color: pos.color,
+                        bgColor: pos.bgColor,
+                        borderColor: pos.borderColor,
+                        flashTimer: 0,
+                        onGround: false
+                    });
+                });
+
+                draggedBlock = null;
+                isDragging = false;
+                updateDisplay();
+                updateStateText();
+            }
+
+            function releaseBlocks() {
+                if (released) return;
+                released = true;
+                
+                textBlocks.forEach(block => {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 1 + Math.random() * 2;
+                    block.vx = Math.cos(angle) * speed;
+                    block.vy = Math.sin(angle) * speed - 1;
+                });
+                
+                updateStateText();
+            }
+
+            function updateStateText() {
+                const stateText = document.getElementById('stateText');
+                if (stateText) {
+                    stateText.textContent = released ? '🎯 已释放' : '📦 点击释放';
+                }
+            }
+
+            function isOverlapping(a, b) {
+                return a.x < b.x + b.width + MIN_GAP && 
+                       a.x + a.width + MIN_GAP > b.x &&
+                       a.y < b.y + b.height + MIN_GAP && 
+                       a.y + a.height + MIN_GAP > b.y;
+            }
+
+            function separateBlocks(a, b, forceMultiplier = 1.0) {
+                if (!isOverlapping(a, b)) return;
+                
+                const centerAX = a.x + a.width / 2;
+                const centerAY = a.y + a.height / 2;
+                const centerBX = b.x + b.width / 2;
+                const centerBY = b.y + b.height / 2;
+                
+                let dx = centerBX - centerAX;
+                let dy = centerBY - centerAY;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 0.001) {
+                    dx = (Math.random() - 0.5) * 10;
+                    dy = (Math.random() - 0.5) * 10;
+                    distance = Math.sqrt(dx * dx + dy * dy);
+                }
+                
+                const normX = dx / distance;
+                const normY = dy / distance;
+                const requiredSeparation = (a.width / 2 + b.width / 2 + MIN_GAP) * 1.2;
+                const moveDistance = requiredSeparation * SEPARATION_FORCE * forceMultiplier;
+                
+                if (draggedBlock === a) {
+                    b.x += normX * moveDistance;
+                    b.y += normY * moveDistance;
+                } else if (draggedBlock === b) {
+                    a.x -= normX * moveDistance;
+                    a.y -= normY * moveDistance;
+                } else {
+                    a.x -= normX * moveDistance / 2;
+                    a.y -= normY * moveDistance / 2;
+                    b.x += normX * moveDistance / 2;
+                    b.y += normY * moveDistance / 2;
+                }
+            }
+
+            function ensureNoOverlapAll() {
+                let iterations = 0;
+                while (iterations < 15) {
+                    let hasOverlap = false;
+                    for (let i = 0; i < textBlocks.length; i++) {
+                        for (let j = i + 1; j < textBlocks.length; j++) {
+                            if (isOverlapping(textBlocks[i], textBlocks[j])) {
+                                separateBlocks(textBlocks[i], textBlocks[j], 1.5);
+                                hasOverlap = true;
+                            }
+                        }
+                    }
+                    if (!hasOverlap) break;
+                    iterations++;
+                }
+            }
+
+            function countMovingBlocks() {
+                return textBlocks.filter(block => {
+                    if (draggedBlock === block) return false;
+                    return Math.abs(block.vx) > STATIC_THRESHOLD || Math.abs(block.vy) > STATIC_THRESHOLD;
+                }).length;
+            }
+
+            function updateDisplay() {
+                const collisionDisplay = document.getElementById('collisionDisplay');
+                if (collisionDisplay) collisionDisplay.textContent = `💥 ${collisionCount}次`;
+                
+                const movingDisplay = document.getElementById('movingDisplay');
+                if (movingDisplay) {
+                    if (!released) {
+                        movingDisplay.textContent = '📦 排列中';
+                    } else {
+                        const mc = countMovingBlocks();
+                        movingDisplay.textContent = mc === 0 ? '📦 静止' : `🏃 ${mc}动`;
+                    }
+                }
+            }
+
+            function applyFriction(block) {
+                block.vx *= AIR_FRICTION;
+                block.vy *= AIR_FRICTION;
+                if (block.y + block.height >= GROUND_Y - 1) {
+                    block.vx *= GROUND_FRICTION;
+                    block.vy *= GROUND_FRICTION;
+                    block.onGround = true;
+                } else {
+                    block.onGround = false;
+                }
+                if (Math.abs(block.vx) < STATIC_THRESHOLD) block.vx = 0;
+                if (Math.abs(block.vy) < STATIC_THRESHOLD) block.vy = 0;
+            }
+
+            function updatePhysics() {
+                if (!released) {
+                    const positions = getArrangedPositions();
+                    textBlocks.forEach((block, index) => {
+                        if (index < positions.length) {
+                            block.x = positions[index].x;
+                            block.y = positions[index].y;
+                            block.vx = 0;
+                            block.vy = 0;
+                        }
+                    });
+                    updateDisplay();
+                    return;
+                }
+                
+                textBlocks.forEach(block => {
+                    if (block.flashTimer > 0) block.flashTimer -= 0.05;
+                });
+
+                for (let block of textBlocks) {
+                    if (draggedBlock === block) {
+                        block.vx = 0;
+                        block.vy = 0;
+                        continue;
+                    }
+                    block.vy += GRAVITY;
+                    applyFriction(block);
+                    block.x += block.vx;
+                    block.y += block.vy;
+                }
+
+                const leftWall = 25, rightWall = W - 25, topWall = 18, bottomWall = GROUND_Y;
+                for (let block of textBlocks) {
+                    if (draggedBlock === block) continue;
+                    if (block.x < leftWall) { block.x = leftWall; block.vx = Math.abs(block.vx) * 0.3; }
+                    if (block.x + block.width > rightWall) { block.x = rightWall - block.width; block.vx = -Math.abs(block.vx) * 0.3; }
+                    if (block.y < topWall) { block.y = topWall; block.vy = Math.abs(block.vy) * 0.3; }
+                    if (block.y + block.height > bottomWall) { block.y = bottomWall - block.height; block.vy = -Math.abs(block.vy) * 0.2; block.vx *= 0.8; }
+                }
+
+                let collisionHappened = false;
+                for (let i = 0; i < textBlocks.length; i++) {
+                    for (let j = i + 1; j < textBlocks.length; j++) {
+                        const a = textBlocks[i], b = textBlocks[j];
+                        if (isOverlapping(a, b)) {
+                            const pairKey = `${Math.min(a.id, b.id)}-${Math.max(a.id, b.id)}`;
+                            const now = Date.now();
+                            if (!collisionCooldown.has(pairKey) || now - collisionCooldown.get(pairKey) > 500) {
+                                collisionCount++;
+                                collisionCooldown.set(pairKey, now);
+                                a.flashTimer = 1.0;
+                                b.flashTimer = 1.0;
+                            }
+                            separateBlocks(a, b, 1.0);
+                            
+                            const centerAX = a.x + a.width/2, centerAY = a.y + a.height/2;
+                            const centerBX = b.x + b.width/2, centerBY = b.y + b.height/2;
+                            let dx = centerBX - centerAX, dy = centerBY - centerAY;
+                            let distance = Math.sqrt(dx*dx + dy*dy);
+                            if (distance > 0.001) {
+                                const nx = dx/distance, ny = dy/distance;
+                                if (draggedBlock === a) { b.vx = nx * BOUNCE_SPEED; b.vy = ny * BOUNCE_SPEED; }
+                                else if (draggedBlock === b) { a.vx = -nx * BOUNCE_SPEED; a.vy = -ny * BOUNCE_SPEED; }
+                                else { a.vx = -nx * BOUNCE_SPEED * 0.5; a.vy = -ny * BOUNCE_SPEED * 0.5; b.vx = nx * BOUNCE_SPEED * 0.5; b.vy = ny * BOUNCE_SPEED * 0.5; }
+                            }
+                            collisionHappened = true;
+                        }
+                    }
+                }
+                if (collisionHappened) ensureNoOverlapAll();
+                updateDisplay();
+            }
+
+            function drawScene() {
+                ctx.clearRect(0, 0, W, H);
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fillRect(0, 0, W, H);
+                
+                if (!released) {
+                    const positions = getArrangedPositions();
+                    const padding = 20;
+                    let minX = W, minY = H, maxX = 0, maxY = 0;
+                    positions.forEach(pos => {
+                        minX = Math.min(minX, pos.x);
+                        minY = Math.min(minY, pos.y);
+                        maxX = Math.max(maxX, pos.x + 44);
+                        maxY = Math.max(maxY, pos.y + 44);
+                    });
+                    minX -= padding; minY -= padding; maxX += padding; maxY += padding;
+                    
+                    ctx.save();
+                    ctx.strokeStyle = '#3a3025';
+                    ctx.lineWidth = 2.5;
+                    ctx.shadowColor = '#000';
+                    ctx.shadowBlur = 15;
+                    ctx.fillStyle = 'rgba(30, 25, 20, 0.4)';
+                    ctx.beginPath();
+                    ctx.roundRect(minX, minY, maxX - minX, maxY - minY, 12);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.font = 'bold 14px "KaiTi"';
+                    ctx.fillStyle = '#c9a87c';
+                    ctx.fillText('点击释放', W/2 - 32, minY - 8);
+                    ctx.restore();
+                }
+                
+                ctx.strokeStyle = '#151515';
+                ctx.lineWidth = 0.4;
+                for (let i = 0; i < W; i += 45) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, H); ctx.stroke(); }
+                for (let j = 0; j < H; j += 45) { ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(W, j); ctx.stroke(); }
+                
+                ctx.strokeStyle = '#2a2a2a';
+                ctx.lineWidth = 1.2;
+                ctx.beginPath(); ctx.moveTo(20, GROUND_Y); ctx.lineTo(W-20, GROUND_Y); ctx.stroke();
+                
+                ctx.font = 'bold 11px "KaiTi"';
+                ctx.fillStyle = '#e67e7e'; ctx.fillText('「豪到你了？」', 30, H-8);
+                ctx.fillStyle = '#7ea68e'; ctx.fillText('「张明佑作」', W-100, H-8);
+                
+                textBlocks.forEach(block => {
+                    ctx.save();
+                    const x = block.x, y = block.y, w = block.width, h = block.height;
+                    let bg = block.bgColor, bc = block.borderColor;
+                    if (block.flashTimer > 0) {
+                        const fi = block.flashTimer;
+                        bg = `rgba(255,200,100,${fi*0.4})`;
+                        bc = `rgba(255,180,60,${fi})`;
+                    }
+                    ctx.shadowColor = '#000';
+                    ctx.shadowBlur = block.onGround && Math.abs(block.vx)<0.05 ? 6 : 10;
+                    ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 1;
+                    ctx.fillStyle = bg;
+                    ctx.beginPath(); ctx.roundRect(x, y, w, h, 10); ctx.fill();
+                    ctx.shadowBlur = 3;
+                    ctx.strokeStyle = bc; ctx.lineWidth = 1.8; ctx.stroke();
+                    ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+                    ctx.font = 'bold 26px "Noto Serif SC", "KaiTi"';
+                    ctx.fillStyle = block.color;
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    ctx.fillText(block.text, x + w/2, y + h/2);
+                    if (draggedBlock === block) {
+                        ctx.strokeStyle = '#d4af6a'; ctx.lineWidth = 2.5;
+                        ctx.shadowColor = '#b38b40'; ctx.shadowBlur = 10;
+                        ctx.beginPath(); ctx.roundRect(x-2, y-2, w+4, h+4, 12); ctx.stroke();
+                    }
+                    ctx.restore();
+                });
+                
+                ctx.font = 'bold 12px "KaiTi"';
+                ctx.fillStyle = '#888';
+                if (!released) ctx.fillText('✨ 点击盒子 ✨', W/2-55, 30);
+                else if (countMovingBlocks() === 0 && !isDragging) ctx.fillText('✨ 全部静止 ✨', W/2-55, 30);
+            }
+
+            CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+                if (w < 2 * r) r = w / 2;
+                if (h < 2 * r) r = h / 2;
+                this.moveTo(x + r, y);
+                this.lineTo(x + w - r, y);
+                this.quadraticCurveTo(x + w, y, x + w, y + r);
+                this.lineTo(x + w, y + h - r);
+                this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+                this.lineTo(x + r, y + h);
+                this.quadraticCurveTo(x, y + h, x, y + h - r);
+                this.lineTo(x, y + r);
+                this.quadraticCurveTo(x, y, x + r, y);
+                this.closePath();
+                return this;
+            };
+
+            function getCanvasCoords(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = W / rect.width, scaleY = H / rect.height;
+                let cx, cy;
+                if (e.touches) {
+                    if (e.touches.length === 0) return null;
+                    cx = e.touches[0].clientX; cy = e.touches[0].clientY;
+                } else { cx = e.clientX; cy = e.clientY; }
+                return {
+                    x: Math.min(Math.max((cx - rect.left) * scaleX, 0), W),
+                    y: Math.min(Math.max((cy - rect.top) * scaleY, 0), H)
+                };
+            }
+
+            function onPointerDown(e) {
+                e.preventDefault();
+                const coords = getCanvasCoords(e);
+                if (!coords) return;
+                mouseX = coords.x; mouseY = coords.y;
+                
+                if (!released) {
+                    const positions = getArrangedPositions();
+                    const padding = 20;
+                    let minX = W, minY = H, maxX = 0, maxY = 0;
+                    positions.forEach(pos => {
+                        minX = Math.min(minX, pos.x); minY = Math.min(minY, pos.y);
+                        maxX = Math.max(maxX, pos.x + 44); maxY = Math.max(maxY, pos.y + 44);
+                    });
+                    minX -= padding; minY -= padding; maxX += padding; maxY += padding;
+                    if (mouseX >= minX && mouseX <= maxX && mouseY >= minY && mouseY <= maxY) {
+                        releaseBlocks(); return;
+                    }
+                }
+                
+                if (released) {
+                    for (let i = textBlocks.length - 1; i >= 0; i--) {
+                        const block = textBlocks[i];
+                        if (mouseX >= block.x && mouseX <= block.x + block.width &&
+                            mouseY >= block.y && mouseY <= block.y + block.height) {
+                            draggedBlock = block;
+                            dragOffsetX = mouseX - block.x;
+                            dragOffsetY = mouseY - block.y;
+                            isDragging = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            function onPointerMove(e) {
+                e.preventDefault();
+                const coords = getCanvasCoords(e);
+                if (!coords) return;
+                mouseX = coords.x; mouseY = coords.y;
+                if (isDragging && draggedBlock && released) {
+                    let nx = mouseX - dragOffsetX, ny = mouseY - dragOffsetY;
+                    nx = Math.min(Math.max(nx, 25), W - 25 - draggedBlock.width);
+                    ny = Math.min(Math.max(ny, 18), GROUND_Y - draggedBlock.height);
+                    draggedBlock.x = nx; draggedBlock.y = ny;
+                    draggedBlock.vx = 0; draggedBlock.vy = 0;
+                    for (let block of textBlocks) {
+                        if (block !== draggedBlock && isOverlapping(draggedBlock, block))
+                            separateBlocks(draggedBlock, block, 2.0);
+                    }
+                }
+            }
+
+            function onPointerUp(e) {
+                e.preventDefault();
+                if (isDragging && draggedBlock) {
+                    draggedBlock.vx = (Math.random() - 0.5) * 0.2;
+                    draggedBlock.vy = (Math.random() - 0.5) * 0.2;
+                }
+                draggedBlock = null; isDragging = false;
+            }
+
+            function resetGame() { resetBlocks(); }
+
+            canvas.addEventListener('mousedown', onPointerDown);
+            window.addEventListener('mousemove', (e) => { if (isDragging || e.target === canvas) onPointerMove(e); });
+            window.addEventListener('mouseup', onPointerUp);
+            canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+            canvas.addEventListener('touchmove', onPointerMove, { passive: false });
+            canvas.addEventListener('touchend', onPointerUp);
+            canvas.addEventListener('touchcancel', onPointerUp);
+            document.getElementById('resetButton').addEventListener('click', resetGame);
+            window.addEventListener('mouseleave', () => { if (isDragging) onPointerUp({ preventDefault: () => {} }); });
+
+            function gameLoop() { updatePhysics(); drawScene(); requestAnimationFrame(gameLoop); }
+            resetBlocks(); gameLoop();
+        })();
+
+        // ========== 霓虹按钮交互 ==========
+        
+        let btns = document.querySelectorAll('a');
+
+        btns.forEach(btn => {
+            btn.onmousemove = (e) => {
+                let x = e.pageX - btn.offsetLeft;
+                let y = e.pageY - btn.offsetTop;
+
+                btn.style.setProperty('--x', `${x}px`);
+                btn.style.setProperty('--y', `${y}px`);
+            }
+        });
+    </script>
+</body>
+</html>
